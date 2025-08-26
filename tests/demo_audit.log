@@ -1,0 +1,2 @@
+{"timestamp": "2025-08-26T17:21:48.775457", "user": "UNKNOWN", "action": "delete_user", "function": "delete_user", "module": "__main__", "args": "(456,)", "kwargs": "{}"}
+{"timestamp": "2025-08-26T17:21:48.776365", "user": "UNKNOWN", "action": "sensitive_operation", "function": "sensitive_operation", "module": "__main__"}
