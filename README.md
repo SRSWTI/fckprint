@@ -44,7 +44,6 @@ base case: returning 1
 returning result: 3
 returning result: 5
 ```
-```
 
 ### fckprint debugging (fast and structured)
 
@@ -63,7 +62,6 @@ clean, structured output with timestamps and variable tracking:
 17:21:32.924657 line        11         return n
 17:21:32.924677 line        12         return calculate_fibonacci(n - 1) + calculate_fibonacci(n - 2)
 elapsed time: 00:00:00.000181
-```
 ```
 
 ### fckprint show (print replacement)
@@ -103,7 +101,6 @@ structured output with timestamps and log levels:
 [18:08:47.183] INFO returning result: 2
 [18:08:47.183] INFO returning result: 3
 [18:08:47.183] INFO returning result: 5
-```
 ```
 
 
