@@ -22,28 +22,28 @@ def calculate_fibonacci(n):
     print(f"returning result: {result}")
     return result
 
-output is messy and hard to follow:
-```
-entering calculate_fibonacci with n=5
-recursive case: calling calculate_fibonacci(4) + calculate_fibonacci(3)
-entering calculate_fibonacci with n=4
-recursive case: calling calculate_fibonacci(3) + calculate_fibonacci(2)
-entering calculate_fibonacci with n=3
-recursive case: calling calculate_fibonacci(2) + calculate_fibonacci(1)
-entering calculate_fibonacci with n=2
-recursive case: calling calculate_fibonacci(1) + calculate_fibonacci(0)
-entering calculate_fibonacci with n=1
-base case: returning 1
-entering calculate_fibonacci with n=0
-base case: returning 0
-returning result: 1
-returning result: 1
-returning result: 2
-entering calculate_fibonacci with n=1
-base case: returning 1
-returning result: 3
-returning result: 5
-```
+    output is messy and hard to follow:
+    ```
+    entering calculate_fibonacci with n=5
+    recursive case: calling calculate_fibonacci(4) + calculate_fibonacci(3)
+    entering calculate_fibonacci with n=4
+    recursive case: calling calculate_fibonacci(3) + calculate_fibonacci(2)
+    entering calculate_fibonacci with n=3
+    recursive case: calling calculate_fibonacci(2) + calculate_fibonacci(1)
+    entering calculate_fibonacci with n=2
+    recursive case: calling calculate_fibonacci(1) + calculate_fibonacci(0)
+    entering calculate_fibonacci with n=1
+    base case: returning 1
+    entering calculate_fibonacci with n=0
+    base case: returning 0
+    returning result: 1
+    returning result: 1
+    returning result: 2
+    entering calculate_fibonacci with n=1
+    base case: returning 1
+    returning result: 3
+    returning result: 5
+    ```
 
 ### fckprint debugging (fast and structured)
 
@@ -102,8 +102,6 @@ structured output with timestamps and log levels:
 [18:08:47.183] INFO returning result: 3
 [18:08:47.183] INFO returning result: 5
 ```
-
-
 
 ### advanced debugging with fckprint
 
