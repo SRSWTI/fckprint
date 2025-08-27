@@ -24,7 +24,7 @@ def number_to_bits(number):
         return [0]
 
 if __name__ == "__main__":
-    print("Testing fckprint - Never use print for debugging again!")
+    print("Testing fckprint ")
     print("\n=== Testing with context manager ===")
     foo()
     

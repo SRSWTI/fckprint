@@ -21,30 +21,30 @@ def calculate_fibonacci(n):
     result = calculate_fibonacci(n - 1) + calculate_fibonacci(n - 2)
     print(f"returning result: {result}")
     return result
+```
 
-    output is messy and hard to follow:
-    ```
-    entering calculate_fibonacci with n=5
-    recursive case: calling calculate_fibonacci(4) + calculate_fibonacci(3)
-    entering calculate_fibonacci with n=4
-    recursive case: calling calculate_fibonacci(3) + calculate_fibonacci(2)
-    entering calculate_fibonacci with n=3
-    recursive case: calling calculate_fibonacci(2) + calculate_fibonacci(1)
-    entering calculate_fibonacci with n=2
-    recursive case: calling calculate_fibonacci(1) + calculate_fibonacci(0)
-    entering calculate_fibonacci with n=1
-    base case: returning 1
-    entering calculate_fibonacci with n=0
-    base case: returning 0
-    returning result: 1
-    returning result: 1
-    returning result: 2
-    entering calculate_fibonacci with n=1
-    base case: returning 1
-    returning result: 3
-    returning result: 5
-    ```
-
+output is messy and hard to follow:
+```json
+entering calculate_fibonacci with n=5
+recursive case: calling calculate_fibonacci(4) + calculate_fibonacci(3)
+entering calculate_fibonacci with n=4
+recursive case: calling calculate_fibonacci(3) + calculate_fibonacci(2)
+entering calculate_fibonacci with n=3
+recursive case: calling calculate_fibonacci(2) + calculate_fibonacci(1)
+entering calculate_fibonacci with n=2
+recursive case: calling calculate_fibonacci(1) + calculate_fibonacci(0)
+entering calculate_fibonacci with n=1
+base case: returning 1
+entering calculate_fibonacci with n=0
+base case: returning 0
+returning result: 1
+returning result: 1
+returning result: 2
+entering calculate_fibonacci with n=1
+base case: returning 1
+returning result: 3
+returning result: 5
+```
 ### fckprint debugging (fast and structured)
 
 ```python
@@ -55,9 +55,11 @@ def calculate_fibonacci(n):
     if n <= 1:
         return n
     return calculate_fibonacci(n - 1) + calculate_fibonacci(n - 2)
+```
 
 clean, structured output with timestamps and variable tracking:
-```
+
+```json
 17:21:32.924559 line        10         if n <= 1:
 17:21:32.924657 line        11         return n
 17:21:32.924677 line        12         return calculate_fibonacci(n - 1) + calculate_fibonacci(n - 2)
@@ -83,7 +85,7 @@ def calculate_fibonacci(n):
 ```
 
 structured output with timestamps and log levels:
-```
+```json
 [18:08:47.183] INFO entering fibonacci function with n = 5
 [18:08:47.183] INFO recursive case: calling fibonacci 4 and 3
 [18:08:47.183] INFO entering fibonacci function with n = 4
