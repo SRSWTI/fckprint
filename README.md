@@ -24,7 +24,7 @@ def calculate_fibonacci(n):
 ```
 
 output is messy and hard to follow:
-```json
+```
 entering calculate_fibonacci with n=5
 recursive case: calling calculate_fibonacci(4) + calculate_fibonacci(3)
 entering calculate_fibonacci with n=4
@@ -45,6 +45,7 @@ base case: returning 1
 returning result: 3
 returning result: 5
 ```
+
 ### fckprint debugging (fast and structured)
 
 ```python
@@ -59,7 +60,7 @@ def calculate_fibonacci(n):
 
 clean, structured output with timestamps and variable tracking:
 
-```json
+```
 17:21:32.924559 line        10         if n <= 1:
 17:21:32.924657 line        11         return n
 17:21:32.924677 line        12         return calculate_fibonacci(n - 1) + calculate_fibonacci(n - 2)
@@ -85,7 +86,7 @@ def calculate_fibonacci(n):
 ```
 
 structured output with timestamps and log levels:
-```json
+```
 [18:08:47.183] INFO entering fibonacci function with n = 5
 [18:08:47.183] INFO recursive case: calling fibonacci 4 and 3
 [18:08:47.183] INFO entering fibonacci function with n = 4
@@ -103,21 +104,6 @@ structured output with timestamps and log levels:
 [18:08:47.183] INFO returning result: 2
 [18:08:47.183] INFO returning result: 3
 [18:08:47.183] INFO returning result: 5
-```
-
-### advanced debugging with fckprint
-
-```python
-@fckprint.snoop(watch=('x', 'y', 'result'))
-def advanced_calculation(x, y):
-    result = x * y + 10
-    return result
-
-# automatically tracks specific variables:
-# starting var:.. x = 5
-# starting var:.. y = 3
-# new var:....... result = 25
-# return value:.. 25
 ```
 
 ### why fckprint is better
@@ -180,117 +166,57 @@ show("cache miss", level="warning", prefix="CACHE")
 show("calculation complete", level="success")
 ```
 
-or using the full import:
+## advanced debugging features
+
+### custom variable watching
 
 ```python
-import fckprint
-
-def fibonacci(n):
-    fckprint.show("calculating fibonacci for", n)
-    if n <= 1:
-        fckprint.show("base case:", n)
-        return n
-    
-    result = fibonacci(n - 1) + fibonacci(n - 2)
-    fckprint.show("result:", result)
+@fckprint.snoop(watch=('x', 'y', 'result'))
+def calculate(x, y):
+    result = x * y + 10
     return result
+
+calculate(5, 3)
 ```
 
-output:
-```
-17:21:32.924559 line        10         lower = min(lst)
-new var:....... lower = 262
-17:21:32.924657 line        11         upper = max(lst)
-new var:....... upper = 900
-17:21:32.924677 line        12         mid = (lower + upper) / 2
-new var:....... mid = 581.0
-17:21:32.924692 line        13         print(lower, mid, upper)
-262 581.0 900
-elapsed time: 00:00:00.000181
-```
-
-## show function
-
-fckprint's print replacement with structured output:
+### watch explosion for complex objects
 
 ```python
-# direct import (recommended)
-from fckprint import show
-
-# basic usage
-show("hello world")
-show("x =", 5, "y =", 10)
-
-# with log levels
-show("debug info", level="debug")
-show("warning message", level="warning")
-show("error occurred", level="error")
-show("operation successful", level="success")
-
-# with prefixes for easy filtering
-show("database query", prefix="DB", level="info")
-show("cache miss", prefix="CACHE", level="warning")
-show("user login", prefix="AUTH", level="success")
+@fckprint.snoop(watch_explode=('user', 'config'))
+def process_user(user, config):
+    # automatically expand all attributes of user and config objects
+    return user.name + config.environment
 ```
 
-or using the full import:
+### thread information
 
 ```python
-import fckprint
-
-# basic usage
-fckprint.show("hello world")
-fckprint.show("x =", 5, "y =", 10)
+@fckprint.snoop(thread_info=True)
+def threaded_function():
+    return "executed in thread"
 ```
 
-output:
-```
-[18:08:47.183] INFO hello world
-[18:08:47.183] INFO x = 5 y = 10
-[18:08:47.183] DEBUG debug info (/path/to/file.py:10)
-[18:08:47.183] WARNING warning message
-[18:08:47.183] ERROR error occurred
-[18:08:47.183] SUCCESS operation successful
-[DB] [18:08:47.183] INFO database query
-[CACHE] [18:08:47.183] WARNING cache miss
-[AUTH] [18:08:47.183] SUCCESS user login
-```
-
-### show vs print comparison
+### custom prefixes for easy grepping
 
 ```python
-# traditional print
-print("starting function")
-print(f"x = {x}")
-print(f"y = {y}")
-print("finished function")
-
-# fckprint show (direct import)
-from fckprint import show
-show("starting function")
-show("x =", x)
-show("y =", y)
-show("finished function")
-
-# or with full import
-import fckprint
-fckprint.show("starting function")
-fckprint.show("x =", x)
-fckprint.show("y =", y)
-fckprint.show("finished function")
+@fckprint.snoop(prefix='debug: ')
+def debug_function():
+    return "debug output"
 ```
 
-advantages of show:
-- **timestamps** - every message has precise timing
-- **log levels** - info, debug, warning, error, success
-- **prefixes** - easy filtering and categorization
-- **caller info** - debug level shows file and line number
-- **color coding** - different colors for different levels
-- **structured output** - consistent format for parsing
+## production monitoring decorators
 
-## performance monitoring
+fckprint provides powerful decorators that help you monitor, debug, and optimize your production applications. Each decorator automatically tracks relevant metrics and provides structured output to help you understand what's happening in your code.
 
-monitor function execution time and memory usage:
+### performance monitoring
+
+**What it does:** Monitors function execution time and memory usage to identify performance bottlenecks.
+
+**How it helps:**
+- Automatically detects slow functions that exceed your threshold
+- Tracks memory consumption to prevent memory leaks
+- Provides structured warnings when performance degrades
+- Works with or without psutil (gracefully degrades)
 
 ```python
 @fckprint.performance_monitor(threshold=0.5, memory_threshold=100)
@@ -314,15 +240,21 @@ return value:.. result
 elapsed time: 00:00:00.209508
 ```
 
-## error tracking and retry logic
+### error tracking and retry logic
 
-automatically retry failed functions with exponential backoff:
+**What it does:** Automatically retries failed functions with exponential backoff and logs all errors for analysis.
+
+**How it helps:**
+- Prevents transient failures from breaking your application
+- Provides detailed error logs with timestamps and context
+- Implements smart retry strategies with exponential backoff
+- Helps identify patterns in failures for debugging
 
 ```python
 @fckprint.error_tracker(max_retries=3, log_file="api_errors.log")
 def unreliable_network_call(fail_probability=0.3):
     if random.random() < fail_probability:
-        raise connectionerror("network timeout")
+        raise ConnectionError("network timeout")
     return {"status": "success", "data": "important_data"}
 
 result = unreliable_network_call()
@@ -337,9 +269,15 @@ return value:.. {'status': 'success', 'data': 'important_data'}
 elapsed time: 00:00:00.000285
 ```
 
-## caching and optimization
+### caching and optimization
 
-intelligent caching with ttl and size limits:
+**What it does:** Implements intelligent caching with TTL and size limits to improve performance.
+
+**How it helps:**
+- Reduces redundant expensive computations
+- Provides cache hit/miss statistics for optimization
+- Automatically manages cache size and expiration
+- Helps identify which functions benefit most from caching
 
 ```python
 @fckprint.cache_monitor(cache_size=50, ttl=600)
@@ -367,9 +305,15 @@ return value:.. 50
 elapsed time: 00:00:00.000545
 ```
 
-## thread safety monitoring
+### thread safety monitoring
 
-detect potential race conditions and high concurrency:
+**What it does:** Detects potential race conditions and high concurrency issues in multi-threaded applications.
+
+**How it helps:**
+- Identifies when too many threads are accessing the same function
+- Warns about potential race conditions before they cause bugs
+- Provides visibility into thread usage patterns
+- Helps optimize thread pool sizes and concurrency limits
 
 ```python
 @fckprint.thread_monitor(max_concurrent=3)
@@ -381,7 +325,7 @@ def database_operation(operation_id):
 import threading
 threads = []
 for i in range(5):
-    thread = threading.thread(target=database_operation, args=(i,))
+    thread = threading.Thread(target=database_operation, args=(i,))
     threads.append(thread)
     thread.start()
 
@@ -396,16 +340,22 @@ new var:....... result = 'db result for operation 0'
 elapsed time: 00:00:00.107264
 ```
 
-## data validation
+### data validation
 
-validate input and output data against schemas:
+**What it does:** Validates input and output data against schemas to catch errors early.
+
+**How it helps:**
+- Catches data type errors and missing required fields
+- Ensures function contracts are met
+- Provides clear error messages for debugging
+- Helps maintain data integrity across your application
 
 ```python
 @fckprint.validate_data(
     input_schema={'required_args': 2, 'required_kwargs': ['email']},
-    output_schema={'type': dict, 'not_none': true}
+    output_schema={'type': dict, 'not_none': True}
 )
-def create_user_profile(name, age, email=none):
+def create_user_profile(name, age, email=None):
     return {'name': name, 'age': age, 'email': email, 'created_at': datetime.now().isoformat()}
 
 # valid call
@@ -422,17 +372,23 @@ new var:....... result = {'name': 'alice', 'age': 30, 'email': 'alice@example.co
 elapsed time: 00:00:00.001011
 
 starting var:.. validation_errors = ["missing kwargs: {'email'}"]
-new var:....... result = {'name': 'bob', 'age': 25, 'email': none, 'created_at': '2025-08-26t17:21:48.508061'}
+new var:....... result = {'name': 'bob', 'age': 25, 'email': None, 'created_at': '2025-08-26t17:21:48.508061'}
 elapsed time: 00:00:00.000828
 ```
 
-## security monitoring
+### security monitoring
 
-detect potential security threats in function inputs:
+**What it does:** Detects potential security threats in function inputs and masks sensitive data.
+
+**How it helps:**
+- Identifies potential SQL injection and XSS attacks
+- Automatically masks sensitive data in logs
+- Provides security warnings for suspicious input patterns
+- Helps maintain security compliance in production
 
 ```python
-@fckprint.security_monitor(check_inputs=true, mask_sensitive=true)
-def process_user_data(user_input, password=none):
+@fckprint.security_monitor(check_inputs=True, mask_sensitive=True)
+def process_user_data(user_input, password=None):
     return f"processing: {user_input}"
 
 # normal data
@@ -455,35 +411,41 @@ return value:.. 'executing: select * from users; drop table users;'
 elapsed time: 00:00:00.001514
 ```
 
-## circuit breaker pattern
+### circuit breaker pattern
 
-prevent cascading failures in distributed systems:
+**What it does:** Prevents cascading failures in distributed systems by temporarily stopping calls to failing services.
+
+**How it helps:**
+- Prevents one failing service from bringing down your entire system
+- Automatically recovers when services become healthy again
+- Provides clear feedback about service availability
+- Implements industry-standard circuit breaker patterns
 
 ```python
 @fckprint.circuit_breaker(failure_threshold=2, recovery_timeout=10)
-def external_service_call(should_fail=false):
+def external_service_call(should_fail=False):
     if should_fail:
-        raise runtimeerror("external service unavailable")
+        raise RuntimeError("external service unavailable")
     return "service response"
 
 # successful calls
-result1 = external_service_call(should_fail=false)
+result1 = external_service_call(should_fail=False)
 
 # failing calls that trigger circuit breaker
 try:
-    result2 = external_service_call(should_fail=true)
-except exception as e:
+    result2 = external_service_call(should_fail=True)
+except Exception as e:
     print(f"attempt 1 failed: {e}")
 
 try:
-    result3 = external_service_call(should_fail=true)
-except exception as e:
+    result3 = external_service_call(should_fail=True)
+except Exception as e:
     print(f"attempt 2 failed: {e}")
 
 # circuit breaker opens
 try:
-    result4 = external_service_call(should_fail=true)
-except exception as e:
+    result4 = external_service_call(should_fail=True)
+except Exception as e:
     print(f"attempt 3 failed: {e}")
 ```
 
@@ -510,17 +472,23 @@ call ended by exception
 elapsed time: 00:00:00.000238
 ```
 
-## feature flags
+### feature flags
 
-enable/disable functions based on environment variables:
+**What it does:** Enables/disables functions based on environment variables for safe feature rollouts.
+
+**How it helps:**
+- Safely deploy new features without affecting all users
+- A/B test different implementations
+- Quickly disable problematic features in production
+- Implement gradual rollouts and canary deployments
 
 ```python
-@fckprint.feature_flag('new_algorithm', default_enabled=true, environment_var='enable_new_algo')
+@fckprint.feature_flag('new_algorithm', default_enabled=True, environment_var='enable_new_algo')
 def new_sorting_algorithm(data):
     print("using new sorting algorithm!")
-    return sorted(data, reverse=true)
+    return sorted(data, reverse=True)
 
-@fckprint.feature_flag('experimental_feature', default_enabled=false)
+@fckprint.feature_flag('experimental_feature', default_enabled=False)
 def experimental_feature():
     return "experimental result"
 
@@ -539,21 +507,27 @@ return value:.. [9, 6, 5, 4, 3, 2, 1, 1]
 elapsed time: 00:00:00.000253
 
 feature 'experimental_feature' is disabled, skipping 'experimental_feature'
-return value:.. none
+return value:.. None
 elapsed time: 00:00:00.000210
 ```
 
-## audit trail
+### audit trail
 
-create compliance audit logs for sensitive operations:
+**What it does:** Creates compliance audit logs for sensitive operations and user actions.
+
+**How it helps:**
+- Maintains compliance with security and privacy regulations
+- Provides complete audit trail for debugging and forensics
+- Tracks user actions for accountability
+- Helps with security incident response and investigation
 
 ```python
-@fckprint.audit_trail(log_file="user_actions.log", include_args=true)
+@fckprint.audit_trail(log_file="user_actions.log", include_args=True)
 def delete_user(user_id):
     print(f"deleting user {user_id}")
     return f"user {user_id} deleted"
 
-@fckprint.audit_trail(log_file="user_actions.log", include_args=false)
+@fckprint.audit_trail(log_file="user_actions.log", include_args=False)
 def sensitive_operation():
     print("performing sensitive operation")
     return "operation_completed"
@@ -575,9 +549,59 @@ return value:.. 'operation_completed'
 elapsed time: 00:00:00.000546
 ```
 
-## production monitoring
+### rate limiting
 
-comprehensive monitoring combining multiple decorators:
+**What it does:** Enforces API rate limits to prevent abuse and ensure fair resource usage.
+
+**How it helps:**
+- Prevents API abuse and DoS attacks
+- Ensures fair resource distribution among users
+- Provides clear feedback when limits are exceeded
+- Helps maintain system stability under high load
+
+```python
+@fckprint.rate_limiter(max_calls=10, time_window=60)
+def api_endpoint():
+    return "api response"
+
+# simulate rapid calls
+for i in range(15):
+    try:
+        result = api_endpoint()
+        print(f"call {i+1}: success")
+    except Exception as e:
+        print(f"call {i+1}: {e}")
+```
+
+### resource monitoring
+
+**What it does:** Monitors system CPU, memory, and disk usage during function execution.
+
+**How it helps:**
+- Identifies resource bottlenecks before they cause problems
+- Provides early warning of system stress
+- Helps optimize resource allocation
+- Monitors system health in production environments
+
+```python
+@fckprint.resource_monitor(cpu_threshold=80.0, memory_threshold=80.0)
+def resource_intensive_task():
+    # will warn if system resources are under stress
+    time.sleep(0.1)
+    return "task completed"
+
+result = resource_intensive_task()
+```
+
+### production monitoring
+
+**What it does:** Combines multiple monitoring decorators for comprehensive production oversight.
+
+**How it helps:**
+- Provides complete visibility into production function behavior
+- Combines performance, error handling, caching, and security monitoring
+- Reduces the need to manually combine multiple decorators
+- Ensures consistent monitoring across critical functions
 
 ```python
 @fckprint.production_monitor(
@@ -612,51 +636,13 @@ return value:.. {'operation': 'slow', 'result': 'processed_9_items', 'timestamp'
 elapsed time: 00:00:00.608647
 ```
 
-## advanced features
-
-### custom variable watching
-
-```python
-@fckprint.snoop(watch=('x', 'y', 'result'))
-def calculate(x, y):
-    result = x * y + 10
-    return result
-
-calculate(5, 3)
-```
-
-### watch explosion for complex objects
-
-```python
-@fckprint.snoop(watch_explode=('user', 'config'))
-def process_user(user, config):
-    # automatically expand all attributes of user and config objects
-    return user.name + config.environment
-```
-
-### thread information
-
-```python
-@fckprint.snoop(thread_info=true)
-def threaded_function():
-    return "executed in thread"
-```
-
-### custom prefixes for easy grepping
-
-```python
-@fckprint.snoop(prefix='debug: ')
-def debug_function():
-    return "debug output"
-```
-
 ## configuration
 
 ### environment variables
 
 ```bash
 # disable fckprint completely
-export fckprint_disabled=1
+export fckprint_DISABLED=1
 
 # set custom log file
 export fckprint_log_file=my_app.log
@@ -673,9 +659,9 @@ import fckprint
 # set global configuration
 fckprint.set_config(
     max_variable_length=200,
-    color=false,
-    normalize=true,
-    relative_time=true
+    color=False,
+    normalize=True,
+    relative_time=True
 )
 ```
 
