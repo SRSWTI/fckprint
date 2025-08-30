@@ -15,7 +15,7 @@ setuptools.setup(
     version='1.1.2',
     author='SRSWTI Research Labs',
     author_email='team@srswti.com',
-    description="imagine a world using print for debugging, and we are happy to be not be in it now.",
+    description="imagine a world using print for debugging, and we are happy to not be in that world now.",
     long_description=read_file('README.md'),
     long_description_content_type='text/markdown',
     url='https://github.com/SRSWTI/fckprint',
