@@ -700,7 +700,7 @@ mit license - see license file for details
 
 ## contributing
 
-contributions are welcome! please read the contributing guidelines and submit pull requests.
+contributions are welcome! please read the contributing guidelines and submit pull requests. and thankyou to Rachum, Ram and Hall, Alex and Yanokura, Iori and others, yall are the best.
 
 ## support
 
