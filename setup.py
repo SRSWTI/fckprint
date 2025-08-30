@@ -7,12 +7,12 @@ def read_file(filename):
     with open(filename) as file:
         return file.read()
 
-version = re.search("__version__ = '([0-9.]*)'",
-                    read_file('fckprint/__init__.py')).group(1)
+# version = re.search("__version__ = '([0-9.]*)'",
+#                     read_file('fckprint/__init__.py')).group(1)
 
 setuptools.setup(
     name='fckprint',
-    version=version,
+    version='1.1.2',
     author='SRSWTI Research Labs',
     author_email='team@srswti.com',
     description="imagine a world using print for debugging, and we are happy to be not be in it now.",
@@ -21,7 +21,6 @@ setuptools.setup(
     url='https://github.com/SRSWTI/fckprint',
     packages=setuptools.find_packages(exclude=['tests*']),
     install_requires=[
-        # Core dependencies are minimal - no external requirements
     ],
     extras_require={
         'tests': [
@@ -29,10 +28,11 @@ setuptools.setup(
             'pytest-cov',
         ],
         'monitoring': [
-            'psutil>=5.0.0',  # For performance and resource monitoring
+            'psutil', 
         ],
         'full': [
-            'psutil>=5.0.0',  # All optional features
+            'psutil',  
+            'numpy',
         ],
     },
     classifiers=[
